@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/game/futbol-libre/">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <title>Futbol Libre</title>
+    <meta name="robots" content="noindex">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            position: relative; /* For positioning splash screen */
+        }
+
+        #game-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .gamePlayerHidden {
+            display: none !important;
+        }
+
+        /* Splash Screen Styles */
+        .gamePlayerSplashPreroll {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000; /* Default background */
+        }
+        .gamePlayerBg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .gamePlayerBgImage {
+            width: 100%;
+            height: 100%;
+            background-image: url('/assets/futbol-libre/futbol-libre.webp');
+            background-size: cover;
+            background-position: center;
+            filter: blur(3px) brightness(0.7);
+        }
+        .gamePlayerSplashContent {
+            position: relative; /* To be above the blurred background */
+            text-align: center;
+            color: white;
+        }
+        /* .gamePlayerThumb CSS removed as the element is no longer used */
+
+        @keyframes breathingEffect {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+        }
+
+        .gamePlayerPrerollCTA {
+            cursor: pointer;
+            background: linear-gradient(to right, #EE7752, #E73C7E, #23A6D5, #23D5AB); /* Example gradient, adjust to match image */
+            /* A gradient closer to the image: Orange -> Pink -> Purple */
+            background: linear-gradient(to right, #F57F17, #D81B60, #8E24AA);
+            color: white;
+            padding: 15px 30px; /* Slightly larger padding */
+            border-radius: 50px; /* Fully rounded for pill shape */
+            font-size: 20px;   /* Slightly larger font */
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Initial shadow */
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            animation: breathingEffect 2.5s ease-in-out infinite;
+            z-index: 1000;
+        }
+        .gamePlayerPrerollCTA:hover {
+            transform: scale(1.03); /* Slight scale up on hover, no longer changing bg color */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        .gamePlayerPrerollCTA span { /* Ensure span also behaves with flex for icon alignment */
+            display: inline-flex;
+            align-items: center;
+        }
+        .gamePlayerPrerollCTA svg {
+            width: 24px; /* SVG size */
+            height: 24px;
+            margin-left: 12px; /* Space between text and icon */
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="gamePlayerSplashPreroll">
+        <div class="gamePlayerBg">
+            <div class="gamePlayerBgImage"></div>
+        </div>
+        <div class="gamePlayerSplashContent">
+            <div class="gamePlayerCenterContent">
+                <div>
+                    <div class="gamePlayerPrerollInfo" style="margin-top: 30vh; transform: translateY(-50%);">
+                        <div class="gamePlayerButtons">
+                            <div class="gamePlayerPrerollCTA" id="btn_playgame" onclick="showGame()">
+                                <span>Play Now
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Iframe will be injected here by the script -->
+
+    <script>
+        function showGame() {
+            // Hide splash screen
+            var splashScreen = document.getElementById('splash-screen');
+            if (splashScreen) {
+                splashScreen.classList.add('gamePlayerHidden');
+            }
+
+            // If the iframe already exists, do nothing.
+            if (document.getElementById('game-iframe')) return;
+
+            // Create the iframe dynamically
+            var gameIframe = document.createElement('iframe');
+            gameIframe.id = 'game-iframe';
+            // We apply the necessary classes and styles directly
+            gameIframe.style.width = '100%';
+            gameIframe.style.height = '100%';
+            gameIframe.style.position = 'absolute'; // Ensure it covers the area
+            gameIframe.style.top = '0';
+            gameIframe.style.left = '0';
+            gameIframe.style.border = 'none';
+
+            gameIframe.src = "https://football-bros.org/game/football-bros/";
+            gameIframe.allowFullscreen = true;
+            gameIframe.allow = "autoplay; fullscreen; gamepad; keyboard-map; xr-spatial-tracking";
+            gameIframe.title = "Futbol Libre";
+
+            // Append it directly to the body to ensure it fills the viewport
+            document.body.appendChild(gameIframe);
+        }
+
+        /**
+         * Self-executing function to start preloading the real game in the background
+         * using an inlined Web Worker. This ensures that when the user clicks "Play Now",
+         * the game assets are already in the browser cache.
+         */
+        (function() {
+            try {
+                // The entire worker logic is defined here as a string.
+                const workerScript = `
+                    self.addEventListener('message', (event) => {
+                        const { gameUrl } = event.data;
+                        if (gameUrl) {
+                            // Fetching the URL and its resources to populate the browser cache.
+                            fetch(gameUrl).catch(err => console.error('[Preload Worker] Fetch failed:', err));
+                        }
+                    });
+                `;
+
+                // Create a temporary, in-memory URL for the worker script.
+                const blob = new Blob([workerScript], { type: 'application/javascript' });
+                const workerUrl = URL.createObjectURL(blob);
+
+                // Create and start the new worker.
+                const preloaderWorker = new Worker(workerUrl);
+
+                // The URL to preload
+                const realGameUrl = "https://football-bros.org/game/football-bros/";
+
+                // Send the URL to the worker to begin preloading.
+                preloaderWorker.postMessage({ gameUrl: realGameUrl });
+
+                console.log('Background preloading of the game has been initiated.');
+
+                // The created Object URL will be released when the document is unloaded.
+            } catch (e) {
+                console.error('Failed to initialize the game preloader worker:', e);
+                // If the worker fails, the game will still load normally on click, just without the speed boost.
+            }
+        })();
+    </script>
+</body>
+</html>
